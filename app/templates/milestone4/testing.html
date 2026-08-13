@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Testing & Optimization{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4"><div><h2><i class="fa-solid fa-vial-circle-check"></i> Testing & Optimization</h2><p class="text-muted">Admin health checks for core workflows and database integration.</p></div><div class="display-6 fw-bold">{{passed}} / {{total}} <small class="fs-6 text-muted">checks passed</small></div></div>
+<div class="card border-0 shadow-sm p-3"><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Check</th><th>Status</th><th>Details</th></tr></thead><tbody>
+{% for c in checks %}<tr><td><strong>{{c.name}}</strong></td><td>{% if c.passed %}<span class="badge text-bg-success"><i class="fa-solid fa-check"></i> PASS</span>{% else %}<span class="badge text-bg-danger"><i class="fa-solid fa-xmark"></i> FAIL</span>{% endif %}</td><td class="text-muted">{{c.detail}}</td></tr>{% endfor %}
+</tbody></table></div></div>
+<div class="row g-3 mt-3"><div class="col-md-4"><div class="optimization-card"><i class="fa-solid fa-database"></i><h5>Database</h5><p>Use indexes on patient IDs, bill IDs and transaction references for fast lookups.</p></div></div><div class="col-md-4"><div class="optimization-card"><i class="fa-solid fa-chart-line"></i><h5>Dashboard</h5><p>Charts are built from bounded datasets and recent records to keep admin pages responsive.</p></div></div><div class="col-md-4"><div class="optimization-card"><i class="fa-solid fa-lock"></i><h5>Security</h5><p>Role guards protect admin and patient payment actions; production payments should use a verified gateway.</p></div></div></div>
+{% endblock %}

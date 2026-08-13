@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block content %}<h2>Laboratory Test Request / Report</h2><form method="POST" class="card p-4">
+<label>Patient</label><select name="patient_id" class="form-select mb-3" required>{% for p in patients %}<option value="{{p.id}}">{{p.id}} - {{p.full_name}}</option>{% endfor %}</select>
+<label>Test Type</label><select name="test_type" class="form-select mb-3" required><option>Blood Test</option><option>Urine Test</option><option>X-Ray</option><option>MRI</option><option>CT Scan</option><option>Other</option></select>
+<label>Test Date</label><input type="date" name="test_date" class="form-control mb-3" required><label>Result</label><textarea name="result" class="form-control mb-3" rows="4"></textarea><label>Remarks / Observations</label><textarea name="remarks" class="form-control mb-3" rows="3"></textarea><button class="btn btn-success">Save Laboratory Report</button></form>{% endblock %}

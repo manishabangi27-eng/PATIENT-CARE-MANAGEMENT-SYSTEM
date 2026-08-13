@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Billing & Payments{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4"><div><h2><i class="fa-solid fa-file-invoice-dollar"></i> Billing & Payment Management</h2><p class="text-muted">Generate invoices and track payment status.</p></div></div>
+<div class="alert alert-info"><i class="fa-solid fa-circle-info"></i> Bills can be settled by Cash, UPI or Online payment. Patient online payments create a transaction record; cash requests require admin confirmation.</div>
+<div class="card p-3 mb-4 shadow-sm border-0"><h5><i class="fa-solid fa-plus-circle"></i> Generate Patient Bill</h5><form method="post" class="row g-2">
+<div class="col-md-4"><select class="form-select" name="patient_id" required>{% for p in patients %}<option value="{{p.id}}">{{p.full_name}} (ID {{p.id}})</option>{% endfor %}</select></div>
+{% for n in ['consultation_charge','laboratory_charge','pharmacy_charge','other_charge'] %}<div class="col-md-2"><input class="form-control" name="{{n}}" type="number" step="0.01" min="0" placeholder="{{n.replace('_',' ').title()}}"></div>{% endfor %}
+<div class="col-md-2"><select class="form-select" name="payment_method"><option>Cash</option><option>UPI</option><option>Online</option><option>Card</option></select></div>
+<div class="col-md-2"><select class="form-select" name="payment_status"><option value="Pending">Unpaid / Pending</option><option value="Paid">Paid</option></select></div>
+<div class="col-md-2"><button class="btn btn-primary w-100"><i class="fa-solid fa-file-circle-plus"></i> Generate</button></div>
+</form></div>
+<div class="card border-0 shadow-sm p-3"><h5><i class="fa-solid fa-receipt"></i> Recent Bills</h5><div class="table-responsive"><table class="table align-middle"><thead><tr><th>ID</th><th>Patient</th><th>Total</th><th>Payment</th><th>Status</th><th>Invoice</th></tr></thead><tbody>
+{% for b in bills %}<tr><td>#{{b.id}}</td><td>{{b.patient.full_name}}</td><td>₹{{'%.2f'|format(b.total_amount or 0)}}</td><td>{{b.payment_method or '-'}}</td><td>{% if b.payment_status|lower=='paid' %}<span class="badge text-bg-success">PAID</span>{% else %}<span class="badge text-bg-warning">UNPAID</span>{% endif %}</td><td><a class="btn btn-sm btn-secondary" href="{{url_for('milestone3.invoice',id=b.id)}}"><i class="fa-solid fa-file-pdf"></i> PDF</a></td></tr>{% else %}<tr><td colspan="6" class="text-center text-muted py-4">No bills generated.</td></tr>{% endfor %}</tbody></table></div></div>
+<div class="card border-0 shadow-sm p-3 mt-4"><h5><i class="fa-solid fa-money-check-dollar"></i> Recent Payment Transactions</h5><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Reference</th><th>Patient</th><th>Method</th><th>Amount</th><th>Status</th></tr></thead><tbody>{% for tx in transactions %}<tr><td>{{tx.transaction_reference}}</td><td>{{tx.patient.full_name}}</td><td>{{tx.payment_method}}</td><td>₹{{'%.2f'|format(tx.amount)}}</td><td>{{tx.status}}</td></tr>{% else %}<tr><td colspan="5" class="text-center text-muted">No payment transactions yet.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}System Status | PCMS Hospital{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+ <div><span class="badge text-bg-primary">SYSTEM OPERATIONS</span><h2 class="fw-bold mt-2"><i class="fa-solid fa-server"></i> Hospital System Status</h2><p class="text-muted">Overall performance, optimization, API performance, system trends and operational health across all modules.</p></div>
+ <div class="d-flex gap-2"><a class="btn btn-outline-primary" href="{{url_for('milestone4.testing')}}"><i class="fa-solid fa-vial-circle-check"></i> Testing</a><a class="btn btn-primary" href="{{url_for('milestone4.reports')}}"><i class="fa-solid fa-file-export"></i> Reports</a></div>
+</div>
+
+<div class="row g-3 mb-4">
+ <div class="col-md-3"><div class="dashboard-card stat-blue"><div class="icon-circle"><i class="fa-solid fa-heart-pulse"></i></div><div><div class="stat-label">Overall Status</div><div class="stat-number fs-4">{{overall}}</div></div></div></div>
+ <div class="col-md-3"><div class="dashboard-card stat-green"><div class="icon-circle"><i class="fa-solid fa-gauge-high"></i></div><div><div class="stat-label">System Health</div><div class="stat-number">{{uptime_score}}%</div></div></div></div>
+ <div class="col-md-3"><div class="dashboard-card stat-purple"><div class="icon-circle"><i class="fa-solid fa-stopwatch"></i></div><div><div class="stat-label">Avg Health Check</div><div class="stat-number">{{avg_ms}} ms</div></div></div></div>
+ <div class="col-md-3"><div class="dashboard-card stat-orange"><div class="icon-circle"><i class="fa-solid fa-layer-group"></i></div><div><div class="stat-label">Modules Monitored</div><div class="stat-number">{{module_health|length}}</div></div></div></div>
+</div>
+
+<div class="row g-4">
+ <div class="col-lg-7"><div class="chart-card"><div class="section-heading"><h4><i class="fa-solid fa-server"></i> All System Operational</h4><span class="chart-badge">Live checks</span></div>
+ <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Module / Check</th><th>Result</th><th>Response</th><th>Status</th></tr></thead><tbody>{% for c in checks %}<tr><td><strong>{{c.name}}</strong></td><td>{{c.value}}</td><td>{{c.ms}} ms</td><td>{% if c.ok %}<span class="status-pill status-ok">Operational</span>{% else %}<span class="status-pill status-bad">Issue</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div>
+ <div class="mt-4"><h5><i class="fa-solid fa-stethoscope me-1"></i> Consultations by Department</h5><div class="chart-wrap"><canvas id="dept"></canvas></div></div>
+ </div></div>
+ <div class="col-lg-5"><div class="chart-card"><h4><i class="fa-solid fa-chart-line"></i> System Performance Trend</h4><p class="text-muted">Operational module volume and relative activity.</p><div class="chart-wrap"><canvas id="modules"></canvas></div></div></div>
+ <div class="col-12"><div class="chart-card"><div class="section-heading"><h4><i class="fa-solid fa-bolt"></i> Top API Performance</h4><span class="chart-badge">Current session</span></div><div class="table-responsive"><table class="table"><thead><tr><th>Endpoint</th><th>Requests</th><th>Average</th><th>Last</th><th>Performance</th></tr></thead><tbody>{% for a in top_apis %}<tr><td><code>{{a.endpoint}}</code></td><td>{{a.requests}}</td><td>{{a.avg_ms}} ms</td><td>{{a.last_ms}} ms</td><td><span class="status-pill {% if a.avg_ms < 100 %}status-ok{% elif a.avg_ms < 250 %}status-warn{% else %}status-bad{% endif %}">{% if a.avg_ms < 100 %}Fast{% elif a.avg_ms < 250 %}Normal{% else %}Slow{% endif %}</span></td></tr>{% else %}<tr><td colspan="5" class="text-muted text-center">API timing data will appear as the application is used.</td></tr>{% endfor %}</tbody></table></div></div></div>
+ <div class="col-12"><div class="chart-card"><h4><i class="fa-solid fa-wand-magic-sparkles"></i> Performance Optimization</h4><div class="row g-3 mt-1">{% for name,text,icon in optimizations %}<div class="col-md-4 col-lg"><div class="p-3 bg-light rounded h-100"><i class="fa-solid {{icon}} fa-lg text-primary"></i><h6 class="mt-2 mb-1">{{name}}</h6><small class="text-muted">{{text}}</small></div></div>{% endfor %}</div></div></div>
+ <div class="col-12"><div class="chart-card"><h4><i class="fa-solid fa-chart-simple"></i> Module Performance Overview</h4><div class="row g-3">{% for m in module_health %}<div class="col-md-6 col-xl-4"><div class="d-flex justify-content-between"><strong>{{m.name}}</strong><span>{{m.count}} records</span></div><div class="performance-meter mt-2"><span style="width:{{m.score}}%"></span></div></div>{% endfor %}</div></div></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const mk=(id,type,labels,data,label)=>new Chart(document.getElementById(id),{type,data:{labels,datasets:[{label,data,borderWidth:2,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+mk('dept','bar',{{department_labels|tojson}},{{department_values|tojson}},'Consultations');
+mk('modules','line',{{module_health|map(attribute='name')|list|tojson}},{{module_health|map(attribute='count')|list|tojson}},'Module activity');
+</script>
+{% endblock %}

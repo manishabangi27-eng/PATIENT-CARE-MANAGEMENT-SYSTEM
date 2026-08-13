@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Appointment Management{% endblock %}
+
+{% block content %}
+<div class="admin-hero mb-4">
+  <div>
+    <span class="eyebrow">ADMINISTRATION</span>
+    <h1 class="fw-bold mb-1">Appointment Management</h1>
+    <p class="mb-0">Review patient requests and accept or cancel appointments.</p>
+  </div>
+  <div class="admin-hero-icon">📅</div>
+</div>
+
+<div class="chart-card">
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for a in appointments %}
+        <tr>
+          <td><strong>{{ a.patient.full_name }}</strong></td>
+          <td>Dr. {{ a.doctor.doctor_name }}</td>
+          <td>{{ a.appointment_date }}</td>
+          <td>{{ a.appointment_time.strftime('%I:%M %p') }}</td>
+          <td>
+            {% if a.status|lower == 'accepted' %}
+              <span class="badge text-bg-success">Accepted</span>
+            {% elif a.status|lower == 'cancelled' %}
+              <span class="badge text-bg-danger">Cancelled</span>
+            {% else %}
+              <span class="badge text-bg-warning">Pending</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if a.status|lower not in ['accepted', 'cancelled'] %}
+            <div class="d-flex gap-2">
+              <form method="post" action="{{ url_for('admin.accept_appointment', appointment_id=a.id) }}">
+                <button class="btn btn-sm btn-success" type="submit">✓ Accept</button>
+              </form>
+              <form method="post" action="{{ url_for('admin.cancel_appointment', appointment_id=a.id) }}">
+                <button class="btn btn-sm btn-outline-danger" type="submit">✕ Cancel</button>
+              </form>
+            </div>
+            {% else %}
+              <span class="text-muted">Processed</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="6" class="text-center py-5 text-muted">No appointments found.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

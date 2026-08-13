@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Create Nurse Login{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">Create Nurse Account</h2>
+      <p class="text-muted mb-0">Create the nurse's profile and login credentials together.</p>
+    </div>
+    <a class="btn btn-secondary" href="{{ url_for('admin.nurses') }}">Back</a>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+      <form method="POST" class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Nurse Name *</label>
+          <input class="form-control" name="nurse_name" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Login Email *</label>
+          <input class="form-control" type="email" name="email" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Login Password *</label>
+          <input class="form-control" type="password" name="password" minlength="6" required>
+          <small class="text-muted">The nurse will use this password to log in.</small>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Contact Number</label>
+          <input class="form-control" name="contact_number">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Department</label>
+          <input class="form-control" name="department">
+        </div>
+        <div class="col-12 mt-4">
+          <button class="btn btn-success px-4" type="submit">Create Nurse Login Account</button>
+          <a class="btn btn-outline-secondary px-4" href="{{ url_for('admin.nurses') }}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

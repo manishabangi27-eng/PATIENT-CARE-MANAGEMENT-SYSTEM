@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between"><h2>Nurse Management</h2><a class="btn btn-success" href="{{ url_for('admin.add_nurse') }}">+ Add Nurse</a></div>
+<table class="table table-striped mt-3"><tr><th>Name</th><th>Department</th><th>Contact</th><th>Email</th><th>Action</th></tr>
+{% for n in nurses %}<tr><td>{{n.nurse_name}}</td><td>{{n.department}}</td><td>{{n.contact_number}}</td><td>{{n.email}}</td><td><form method="POST" action="{{ url_for('admin.delete_nurse', nurse_id=n.id) }}"><button class="btn btn-sm btn-danger" onclick="return confirm('Delete nurse?')">Delete</button></form></td></tr>{% else %}<tr><td colspan="5">No nurses found.</td></tr>{% endfor %}</table>
+{% endblock %}

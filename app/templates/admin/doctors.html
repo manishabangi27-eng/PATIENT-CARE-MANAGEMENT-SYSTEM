@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between"><h2>Doctor Management</h2><a class="btn btn-success" href="{{ url_for('admin.add_doctor') }}">+ Add Doctor</a></div>
+<table class="table table-striped mt-3"><tr><th>Name</th><th>Specialization</th><th>Department</th><th>Contact</th><th>Action</th></tr>
+{% for d in doctors %}<tr><td>{{d.doctor_name}}</td><td>{{d.specialization}}</td><td>{{d.department}}</td><td>{{d.contact_number}}</td><td><form method="POST" action="{{ url_for('admin.delete_doctor', doctor_id=d.id) }}"><button class="btn btn-sm btn-danger" onclick="return confirm('Delete doctor?')">Delete</button></form></td></tr>{% else %}<tr><td colspan="5">No doctors found.</td></tr>{% endfor %}</table>
+{% endblock %}

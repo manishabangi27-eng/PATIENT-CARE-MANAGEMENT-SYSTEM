@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000">
+<defs>
+ <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#071d3b"/><stop offset="1" stop-color="#0b5aa2"/></linearGradient>
+ <linearGradient id="road" x1="0" x2="1"><stop stop-color="#102b45"/><stop offset="1" stop-color="#173c5d"/></linearGradient>
+</defs>
+<rect width="1600" height="1000" fill="url(#bg)"/>
+<circle cx="1260" cy="160" r="120" fill="#dff6ff" opacity=".12"/>
+<circle cx="1260" cy="160" r="70" fill="#fff" opacity=".08"/>
+<path d="M0 690 Q420 610 820 680 T1600 650 V1000H0Z" fill="#eaf8ff" opacity=".08"/>
+<rect y="780" width="1600" height="220" fill="url(#road)"/>
+<path d="M0 890H1600" stroke="#d7eefb" stroke-width="10" stroke-dasharray="80 55" opacity=".35"/>
+<!-- hospital van -->
+<g transform="translate(350 360)">
+ <rect x="70" y="190" width="780" height="300" rx="55" fill="#f7fcff"/>
+ <path d="M850 270h160l170 160v60H850Z" fill="#f7fcff"/>
+ <path d="M905 290h95l115 105H905Z" fill="#8fd3f4"/>
+ <rect x="110" y="230" width="260" height="150" rx="20" fill="#bce8fb"/>
+ <rect x="400" y="230" width="260" height="150" rx="20" fill="#bce8fb"/>
+ <rect x="665" y="230" width="140" height="150" rx="20" fill="#bce8fb"/>
+ <circle cx="255" cy="505" r="75" fill="#183a55"/><circle cx="255" cy="505" r="37" fill="#a8c5d8"/>
+ <circle cx="1000" cy="505" r="75" fill="#183a55"/><circle cx="1000" cy="505" r="37" fill="#a8c5d8"/>
+ <rect x="470" y="400" width="110" height="30" rx="15" fill="#0d70b8"/>
+ <rect x="510" y="360" width="30" height="110" rx="15" fill="#0d70b8"/>
+ <rect x="735" y="410" width="80" height="45" rx="10" fill="#e53935"/>
+ <text x="735" y="405" font-family="Arial" font-size="25" font-weight="700" fill="#ffffff">ICMP</text>
+ <text x="155" y="180" font-family="Arial" font-size="42" font-weight="700" fill="#0d5e9e">HOSPITAL CARE</text>
+ <path d="M1220 430l70-30v45l-70 30Z" fill="#fff" opacity=".8"/>
+</g>
+<g fill="#fff" opacity=".8">
+ <rect x="120" y="120" width="130" height="8" rx="4"/><rect x="120" y="145" width="80" height="8" rx="4"/>
+ <rect x="1320" y="350" width="120" height="8" rx="4"/><rect x="1320" y="375" width="75" height="8" rx="4"/>
+</g>
+</svg>

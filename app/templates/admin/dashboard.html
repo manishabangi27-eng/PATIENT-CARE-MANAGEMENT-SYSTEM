@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | PCMS Hospital{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div><span class="badge text-bg-primary">HOSPITAL MANAGEMENT</span><h1 class="fw-bold mt-2 mb-1">Admin Operations Dashboard</h1><p class="text-muted mb-0">Central view of patients, clinical care, pharmacy, billing, notifications and hospital performance.</p></div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-primary" href="{{ url_for('admin.system_status') }}"><i class="fa-solid fa-server me-1"></i> System Status</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('milestone4.reports') }}"><i class="fa-solid fa-file-export me-1"></i> All Reports</a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+{% for icon,label,value,cls in [
+('fa-hospital-user','Patients',patients,'stat-blue'),('fa-user-doctor','Doctors',doctors,'stat-green'),
+('fa-user-nurse','Nurses',nurses,'stat-purple'),('fa-calendar-check','Appointments',appointments,'stat-orange'),
+('fa-stethoscope','Consultations',completed_consultations,'stat-blue'),('fa-flask-vial','Pending Lab Tests',pending_labs,'stat-red'),
+('fa-file-invoice-dollar','Bills Generated',bills_generated,'stat-green'),('fa-bell','Unread Notifications',unread_notifications,'stat-purple')] %}
+<div class="col-6 col-xl-3"><div class="dashboard-card {{cls}}"><div class="icon-circle"><i class="fa-solid {{icon}}"></i></div><div><div class="stat-label">{{label}}</div><div class="stat-number">{{value}}</div></div></div></div>
+{% endfor %}
+</div>
+
+<!-- System Quick Actions: centralized administrator controls -->
+<div class="quick-actions-card mb-4">
+  <div class="section-heading mb-3">
+    <div>
+      <h4><i class="fa-solid fa-bolt text-warning me-2"></i>System Quick Actions</h4>
+      <p>Direct access to administration, patient care, feedback, billing, integrations, testing and system configuration.</p>
+    </div>
+    <span class="chart-badge"><i class="fa-solid fa-shield-halved me-1"></i> Admin Only</span>
+  </div>
+  <div class="row g-2">
+    {% for action in [
+      ('fa-file-lines','Administrative','Open admin control dashboard','admin.dashboard','primary'),
+      ('fa-star','Feedback & Satisfaction','Review ratings and patient feedback','milestone4.feedback_admin','outline-primary'),
+      ('fa-user-doctor','Manage Doctors','Add, view or remove doctor accounts','admin.doctors','outline-success'),
+      ('fa-user-nurse','Manage Nurses','Add, view or remove nurse accounts','admin.nurses','outline-success'),
+      ('fa-hospital-user','View Patients','Open patient records and profiles','admin.patients','outline-info'),
+      ('fa-calendar-check','Manage Appointments','Accept, cancel and monitor appointments','admin.appointments','outline-warning'),
+      ('fa-file-invoice-dollar','Billing','Manage hospital bills and payment records','milestone3.billing','outline-dark'),
+      ('fa-bell','Notifications','View and manage hospital notifications','admin.notifications','outline-secondary'),
+      ('fa-diagram-project','System Integration','Check integrated hospital modules and payments','milestone4.integrations','outline-primary'),
+      ('fa-vial-circle-check','Testing & Optimization','Run health checks and review optimization','milestone4.testing','outline-success'),
+      ('fa-gear','System Settings','Configure hospital and payment settings','milestone4.settings','outline-secondary'),
+      ('fa-file-export','Reports','Export patient, billing and feedback reports','milestone4.reports','outline-dark')
+    ] %}
+    <div class="col-12 col-md-6 col-xl-4">
+      <a class="quick-action-btn btn btn-{{action[4]}}" href="{{ url_for(action[3]) }}">
+        <span class="quick-action-icon"><i class="fa-solid {{action[0]}}"></i></span>
+        <span class="quick-action-text"><strong>{{action[1]}}</strong><small>{{action[2]}}</small></span>
+        <i class="fa-solid fa-chevron-right quick-action-arrow"></i>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><a class="admin-module-tile" href="{{ url_for('milestone3.pharmacy') }}"><div class="module-icon"><i class="fa-solid fa-pills"></i></div><h5 class="mb-1">Pharmacy Management</h5><p class="text-muted mb-2">Inventory, dispensing, low-stock and expiry monitoring.</p><span class="badge text-bg-primary">{{ pharmacy_total }} medicines</span> <span class="badge text-bg-warning">{{ pharmacy_low }} low stock</span></a></div>
+  <div class="col-md-4"><a class="admin-module-tile" href="{{ url_for('admin.notifications') }}"><div class="module-icon"><i class="fa-solid fa-bell"></i></div><h5 class="mb-1">Patient Notifications</h5><p class="text-muted mb-2">Send billing, report and hospital updates; monitor read/unread status.</p><span class="badge text-bg-info">{{ unread_patients }} unread from patients</span></a></div>
+  <div class="col-md-4"><a class="admin-module-tile" href="{{ url_for('admin.system_status') }}"><div class="module-icon"><i class="fa-solid fa-gauge-high"></i></div><h5 class="mb-1">System Status & Performance</h5><p class="text-muted mb-2">Operational health, API timings, trends and optimization recommendations.</p><span class="badge text-bg-success">Live monitoring</span></a></div>
+</div>
+
+<div class="row g-4">
+ <div class="col-lg-8"><div class="chart-card"><div class="section-heading"><h4><i class="fa-solid fa-chart-line"></i> Hospital Appointment Trend</h4><span class="chart-badge">30 days</span></div><div class="chart-wrap"><canvas id="trend"></canvas></div></div></div>
+ <div class="col-lg-4"><div class="chart-card"><h4><i class="fa-solid fa-wallet"></i> Revenue Overview</h4><div class="p-3"><div class="alert alert-success"><strong>Paid</strong><span class="float-end">₹{{ '%.2f'|format(paid_revenue) }}</span></div><div class="alert alert-warning"><strong>Unpaid</strong><span class="float-end">₹{{ '%.2f'|format(unpaid_revenue) }}</span></div></div></div></div>
+ <div class="col-lg-6"><div class="chart-card"><h4><i class="fa-solid fa-user-plus"></i> Patient Registrations</h4><div class="chart-wrap"><canvas id="registrations"></canvas></div></div></div>
+ <div class="col-lg-6"><div class="chart-card"><h4><i class="fa-solid fa-stethoscope"></i> Consultations by Department</h4><div class="chart-wrap"><canvas id="departments"></canvas></div></div></div>
+ <div class="col-lg-5"><div class="chart-card"><h4><i class="fa-solid fa-users"></i> Patient Demographics</h4><div class="chart-wrap"><canvas id="demographics"></canvas></div></div></div>
+ <div class="col-lg-7"><div class="chart-card"><h4><i class="fa-solid fa-user-doctor"></i> Doctor-wise Consultations</h4><div class="chart-wrap"><canvas id="doctors"></canvas></div></div></div>
+ <div class="col-12"><div class="chart-card"><div class="section-heading"><h4><i class="fa-solid fa-heart-pulse"></i> Overall Hospital Management</h4><a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.system_status') }}">Open full performance view</a></div><div class="row g-3"><div class="col-md-3"><div class="p-3 bg-light rounded"><small class="text-muted">Patient care</small><h4>{{ completed_consultations }} consultations</h4></div></div><div class="col-md-3"><div class="p-3 bg-light rounded"><small class="text-muted">Pharmacy</small><h4>{{ pharmacy_total }} medicines</h4></div></div><div class="col-md-3"><div class="p-3 bg-light rounded"><small class="text-muted">Laboratory</small><h4>{{ pending_labs }} pending tests</h4></div></div><div class="col-md-3"><div class="p-3 bg-light rounded"><small class="text-muted">Satisfaction</small><h4>{{ avg_rating }} / 5</h4></div></div></div></div></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const chart=(id,type,labels,data,label)=>new Chart(document.getElementById(id),{type,data:{labels,datasets:[{label,data,borderWidth:2,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+chart('trend','line',{{trend_labels|tojson}},{{trend_values|tojson}},'Appointments');
+chart('registrations','bar',{{month_labels|tojson}},{{month_values|tojson}},'New Patients');
+chart('departments','bar',{{department_labels|tojson}},{{department_values|tojson}},'Consultations');
+chart('doctors','bar',{{doctor_labels|tojson}},{{doctor_values|tojson}},'Consultations');
+chart('demographics','doughnut',{{demographic_labels|tojson}},{{demographic_values|tojson}},'Patients');
+</script>
+
+<div class="row g-4 mt-1">
+  <div class="col-12">
+    <div class="chart-card login-activity-card">
+      <div class="section-heading">
+        <div>
+          <h4><i class="fa-solid fa-clock-rotate-left"></i> Recent Login Activity</h4>
+          <p>Latest successful logins and logout activity across the hospital system.</p>
+        </div>
+        <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.login_activity') }}">View All Activity</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead><tr><th>User</th><th>Role</th><th>Action</th><th>Login Activity Time</th><th>IP Address</th></tr></thead>
+          <tbody>
+          {% for item in recent_activity %}
+          <tr>
+            <td>{{ item.user.full_name if item.user else '-' }}</td>
+            <td><span class="badge text-bg-secondary">{{ item.user.role if item.user else '-' }}</span></td>
+            <td>
+              {% if item.action == 'Login' %}
+              <span class="badge bg-success">✓ Login</span>
+              {% else %}
+              <span class="badge bg-secondary">↪ Logout</span>
+              {% endif %}
+            </td>
+            <td>{{ item.created_at.strftime('%d %b %Y, %I:%M %p') if item.created_at else '-' }}</td>
+            <td>{{ item.ip_address or '-' }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5" class="text-center text-muted py-4">No login activity recorded yet.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

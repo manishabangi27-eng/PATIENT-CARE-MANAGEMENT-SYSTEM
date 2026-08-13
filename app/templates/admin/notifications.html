@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Patient Notifications | Admin{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4"><div><span class="badge text-bg-primary">ADMIN NOTIFICATIONS</span><h2 class="fw-bold mt-2"><i class="fa-solid fa-bell"></i> Patient Notification Center</h2><p class="text-muted">Send billing, laboratory/report, pharmacy and hospital-wide messages and monitor read/unread delivery status.</p></div><a class="btn btn-outline-primary" href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a></div>
+<div class="row g-4">
+ <div class="col-lg-5"><div class="card shadow-sm border-0 p-4"><h5><i class="fa-solid fa-paper-plane me-2"></i>Send Notification</h5>
+  <form method="post">
+   <label class="form-label mt-3">Recipient</label><select name="patient_id" class="form-select"><option value="all">All Patients</option>{% for p in patients %}<option value="{{p.id}}">{{p.full_name}} — {{p.email or p.contact_number or 'No contact'}}</option>{% endfor %}</select>
+   <label class="form-label mt-3">Notification Type</label><select name="notification_type" class="form-select"><option>Billing</option><option>Laboratory Report</option><option>Pharmacy</option><option>Appointment</option><option>General</option></select>
+   <label class="form-label mt-3">Title</label><input name="title" class="form-control" required placeholder="Hospital update">
+   <label class="form-label mt-3">Message</label><textarea name="message" class="form-control" rows="5" required placeholder="Your billing/report/update details..."></textarea>
+   <button class="btn btn-primary w-100 mt-3"><i class="fa-solid fa-paper-plane me-1"></i> Send to Patient Portal</button>
+  </form>
+ </div></div>
+ <div class="col-lg-7"><div class="card shadow-sm border-0 p-4"><div class="d-flex justify-content-between"><h5><i class="fa-solid fa-inbox me-2"></i>Patient Message Status</h5><span class="badge text-bg-secondary">{{ notifications|length }} recent</span></div>
+  <div class="table-responsive mt-3"><table class="table align-middle"><thead><tr><th>Patient</th><th>Message</th><th>Type</th><th>Status</th><th></th></tr></thead><tbody>
+  {% for n in notifications %}<tr><td>{{n.user.full_name}}</td><td><strong>{{n.title}}</strong><br><small>{{n.message[:80] }}{% if n.message|length > 80 %}…{% endif %}</small><br><small class="text-muted">{{n.created_at}}</small></td><td><span class="badge text-bg-light">{{n.notification_type}}</span></td><td>{% if n.status == 'Unread' %}<span class="status-pill status-warn"><i class="fa-solid fa-envelope"></i> Unread</span>{% else %}<span class="status-pill status-ok"><i class="fa-solid fa-envelope-open"></i> Read</span>{% endif %}</td><td>{% if n.status == 'Unread' %}<form method="post" action="{{url_for('admin.admin_read_notification',notification_id=n.id)}}"><button class="btn btn-sm btn-outline-primary">Mark read</button></form>{% endif %}</td></tr>
+  {% else %}<tr><td colspan="5" class="text-center text-muted py-4">No patient notifications yet.</td></tr>{% endfor %}
+  </tbody></table></div>
+ </div></div>
+</div>
+{% endblock %}

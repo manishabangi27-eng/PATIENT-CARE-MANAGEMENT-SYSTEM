@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}Patient EHR{% endblock %}{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><h2><i class="fa-solid fa-file-medical"></i> Electronic Health Record</h2><a class="btn btn-secondary" href="{{url_for('clinical.ehr_search')}}">Back to Search</a></div>
+<div class="card p-3 mb-4"><h4>{{patient.full_name}}</h4><p class="mb-0">Patient ID: {{patient.id}} | Age: {{patient.age or '-'}} | Gender: {{patient.gender or '-'}} | Blood Group: {{patient.blood_group or '-'}}</p></div>
+{% if current_user.role.lower() in ['doctor','nurse','admin'] %}<form method="POST" class="card p-4 mb-4"><h4>Update Medical Information</h4>
+<div class="mb-3"><label>Allergies</label><textarea class="form-control" name="allergies">{{ehr.allergies or ''}}</textarea></div>
+<div class="mb-3"><label>Medical History</label><textarea class="form-control" name="medical_history">{{ehr.medical_history or ''}}</textarea></div>
+<div class="mb-3"><label>Previous Diagnoses</label><textarea class="form-control" name="previous_diagnoses">{{ehr.previous_diagnoses or ''}}</textarea></div>
+<div class="mb-3"><label>Current Medications</label><textarea class="form-control" name="current_medications">{{ehr.current_medications or ''}}</textarea></div>
+<button class="btn btn-primary">Update EHR</button></form>{% endif %}
+<div class="row g-4"><div class="col-lg-6"><div class="card p-3 h-100"><h4>Consultations</h4>{% for x in consultations %}<div class="border-bottom py-2"><b>{{x.consultation_date.strftime('%Y-%m-%d')}}</b> — Dr. {{x.doctor.doctor_name}}<br>Diagnosis: {{x.diagnosis or '-'}}<br>Treatment: {{x.treatment or '-'}}</div>{% else %}<p>No consultations.</p>{% endfor %}</div></div>
+<div class="col-lg-6"><div class="card p-3 h-100"><h4>Prescriptions</h4>{% for x in prescriptions %}<div class="border-bottom py-2"><b>{{x.prescribed_at.strftime('%Y-%m-%d')}}</b> — {{x.medicine_name}}<br>{{x.dosage or '-'}} | {{x.frequency or '-'}} | {{x.duration or '-'}}</div>{% else %}<p>No prescriptions.</p>{% endfor %}</div></div>
+<div class="col-12"><div class="card p-3"><h4>Laboratory Reports</h4><table class="table"><tr><th>Date</th><th>Test</th><th>Result</th><th>Remarks</th></tr>{% for x in lab_reports %}<tr><td>{{x.test_date}}</td><td>{{x.test_type}}</td><td>{{x.result or '-'}}</td><td>{{x.remarks or '-'}}</td></tr>{% else %}<tr><td colspan="4">No lab reports.</td></tr>{% endfor %}</table></div></div></div>{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}<h2>Book Appointment</h2><form method="POST" class="row g-3">
+<div class="col-md-6"><label>Doctor</label><select class="form-select" name="doctor_id" required>{% for d in doctors %}<option value="{{d.id}}">{{d.doctor_name}} - {{d.specialization or 'General'}} ({{d.department or 'Department'}})</option>{% else %}<option disabled>No doctors available</option>{% endfor %}</select></div>
+<div class="col-md-3"><label>Appointment Date</label><input class="form-control" type="date" name="appointment_date" required></div>
+<div class="col-md-3"><label>Appointment Time</label><input class="form-control" type="time" name="appointment_time" required></div>
+<div><button class="btn btn-success">Book Appointment</button> <a class="btn btn-secondary" href="{{url_for('patient.dashboard')}}">Back</a></div>
+</form>{% endblock %}

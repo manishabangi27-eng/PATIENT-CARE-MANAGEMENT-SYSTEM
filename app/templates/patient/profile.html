@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}<h2>Patient Profile</h2><form method="POST" class="row g-3">
+<div class="col-md-6"><label>Full Name</label><input class="form-control" name="full_name" value="{{patient.full_name}}" required></div>
+<div class="col-md-3"><label>Age</label><input class="form-control" type="number" name="age" value="{{patient.age or ''}}"></div>
+<div class="col-md-3"><label>Gender</label><select class="form-select" name="gender"><option>{{patient.gender or ''}}</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+<div class="col-md-6"><label>Contact Number</label><input class="form-control" name="contact_number" value="{{patient.contact_number or ''}}"></div>
+<div class="col-md-6"><label>Blood Group</label><input class="form-control" name="blood_group" value="{{patient.blood_group or ''}}"></div>
+<div class="col-12"><label>Address</label><textarea class="form-control" name="address">{{patient.address or ''}}</textarea></div>
+<div><button class="btn btn-primary">Update Profile</button></div>
+</form>{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Analytics & Operations{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+ <div><span class="badge text-bg-primary">ADMIN ANALYTICS</span><h1 class="fw-bold mt-2">Analytics & Operations Dashboard</h1><p class="text-muted">Real-time hospital statistics, revenue, satisfaction and performance.</p></div>
+ <a class="btn btn-outline-primary" href="{{ url_for('milestone4.reports') }}"><i class="fa-solid fa-file-export"></i> Reports</a>
+</div>
+<div class="row g-3 mb-4">
+{% for icon,label,value,cls in [
+('fa-hospital-user','Total Patients',patients,'stat-blue'),('fa-user-doctor','Active Doctors',doctors,'stat-green'),
+('fa-calendar-day',"Today's Appointments",appointments_today,'stat-purple'),('fa-stethoscope','Completed Consultations',completed,'stat-orange'),
+('fa-flask','Pending Lab Reports',pending_labs,'stat-red'),('fa-file-invoice-dollar','Bills Generated',bills,'stat-blue'),
+('fa-bell','Unread Notifications',unread,'stat-green'),('fa-star','Satisfaction',avg_rating|string+' / 5','stat-purple')] %}
+<div class="col-6 col-xl-3"><div class="dashboard-card {{cls}}"><div class="icon-circle"><i class="fa-solid {{icon}}"></i></div><div><div class="stat-label">{{label}}</div><div class="stat-number">{{value}}</div></div></div></div>
+{% endfor %}
+</div>
+<div class="row g-4">
+ <div class="col-lg-8"><div class="chart-card"><div class="section-heading"><h4><i class="fa-solid fa-chart-line"></i> Appointment Trends</h4><span class="chart-badge">30 days</span></div><div class="chart-wrap"><canvas id="trend"></canvas></div></div></div>
+ <div class="col-lg-4"><div class="chart-card"><div class="section-heading"><h4><i class="fa-solid fa-wallet"></i> Revenue</h4></div><div class="p-3"><div class="alert alert-success"><strong>Paid</strong><span class="float-end">₹{{ '%.2f'|format(paid) }}</span></div><div class="alert alert-warning"><strong>Unpaid</strong><span class="float-end">₹{{ '%.2f'|format(unpaid) }}</span></div></div></div></div>
+ <div class="col-lg-6"><div class="chart-card"><h4><i class="fa-solid fa-user-plus"></i> Patient Registrations</h4><div class="chart-wrap"><canvas id="registrations"></canvas></div></div></div>
+ <div class="col-lg-6"><div class="chart-card"><h4><i class="fa-solid fa-user-doctor"></i> Doctor-wise Consultations</h4><div class="chart-wrap"><canvas id="doctors"></canvas></div></div></div>
+ <div class="col-lg-5"><div class="chart-card"><h4><i class="fa-solid fa-users"></i> Patient Demographics</h4><div class="chart-wrap"><canvas id="demographics"></canvas></div></div></div>
+ <div class="col-lg-7"><div class="chart-card"><div class="section-heading"><h4><i class="fa-solid fa-star"></i> Patient Satisfaction</h4><a class="btn btn-sm btn-outline-primary" href="{{url_for('milestone4.feedback_admin')}}">View feedback</a></div><p class="display-5 fw-bold">{{avg_rating}} <small class="fs-5 text-muted">/ 5</small></p><p class="text-muted">{{feedback_count}} feedback submissions</p></div></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const chart=(id,type,labels,data,label)=>new Chart(document.getElementById(id),{type,data:{labels,datasets:[{label,data,borderWidth:2,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+chart('trend','line',{{trend_labels|tojson}},{{trend_values|tojson}},'Appointments');
+chart('registrations','bar',{{reg_labels|tojson}},{{reg_values|tojson}},'New Patients');
+chart('doctors','bar',{{doctor_labels|tojson}},{{doctor_values|tojson}},'Consultations');
+chart('demographics','doughnut',{{demographic_labels|tojson}},{{demographic_values|tojson}},'Patients');
+</script>
+{% endblock %}

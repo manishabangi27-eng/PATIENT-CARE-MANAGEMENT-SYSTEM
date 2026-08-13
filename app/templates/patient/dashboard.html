@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Patient Dashboard</h2>
+<div class="d-flex gap-2 mb-4"><a class="btn btn-primary" href="{{ url_for('patient.profile') }}">My Profile</a><a class="btn btn-success" href="{{ url_for('patient.book_appointment') }}">Book Appointment</a><a class="btn btn-info" href="{{ url_for('patient.medical_history') }}">My Medical History</a></div>
+<h4>My Appointments</h4>
+<table class="table table-striped"><tr><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th></tr>{% for a in appointments %}<tr><td>{{a.doctor.doctor_name}}</td><td>{{a.appointment_date}}</td><td>{{a.appointment_time}}</td><td>
+{% if a.status|lower == 'accepted' %}
+<span class="badge text-bg-success">Accepted</span>
+{% elif a.status|lower == 'cancelled' %}
+<span class="badge text-bg-danger">Cancelled</span>
+{% else %}
+<span class="badge text-bg-warning">{{ a.status }}</span>
+{% endif %}
+</td></tr>{% else %}<tr><td colspan="4">No appointments yet.</td></tr>{% endfor %}</table>
+<h4 class="mt-4">Medical Records</h4>
+<table class="table table-striped"><tr><th>Date</th><th>Diagnosis</th><th>Notes</th></tr>{% for r in records %}<tr><td>{{r.created_at.strftime('%Y-%m-%d')}}</td><td>{{r.diagnosis}}</td><td>{{r.notes}}</td></tr>{% else %}<tr><td colspan="3">No medical records yet.</td></tr>{% endfor %}</table>
+<div class="row g-3 mt-4">
+<div class="col-md-3"><a class="module-tile text-decoration-none" href="{{ url_for('patient.medical_history') }}"><i class="fa-solid fa-file-medical"></i><strong>Electronic Health Record</strong><span>View your clinical history</span></a></div>
+<div class="col-md-3"><a class="module-tile text-decoration-none" href="{{ url_for('patient.medical_history') }}"><i class="fa-solid fa-stethoscope"></i><strong>Consultation</strong><span>Review consultation records</span></a></div>
+<div class="col-md-3"><a class="module-tile text-decoration-none" href="{{ url_for('patient.medical_history') }}"><i class="fa-solid fa-prescription-bottle-medical"></i><strong>Prescription</strong><span>View prescribed medicines</span></a></div>
+<div class="col-md-3"><a class="module-tile text-decoration-none" href="{{ url_for('patient.medical_history') }}"><i class="fa-solid fa-flask-vial"></i><strong>Laboratory</strong><span>Review lab reports</span></a></div>
+</div>
+<div class="mt-4 d-flex gap-2 flex-wrap"><a class="btn btn-success" href="{{ url_for('milestone4.patient_fees') }}"><i class="fa-solid fa-wallet"></i> View Paid & Unpaid Fees</a><a class="btn btn-primary" href="{{ url_for('milestone4.feedback') }}"><i class="fa-solid fa-star"></i> Give Feedback</a></div>
+{% endblock %}

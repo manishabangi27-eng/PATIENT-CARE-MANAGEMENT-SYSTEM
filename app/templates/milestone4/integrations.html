@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}System Integration{% endblock %}
+{% block content %}
+<div class="mb-4"><h2><i class="fa-solid fa-diagram-project"></i> System Integration</h2><p class="text-muted">Central view of the hospital platform modules and payment connections.</p></div>
+<div class="row g-3 mb-4">
+{% for icon,name,detail,status,kind in checks %}<div class="col-md-6 col-xl-4"><div class="integration-card"><div class="icon-circle"><i class="fa-solid {{icon}}"></i></div><div class="flex-grow-1"><h5>{{name}}</h5><p>{{detail}}</p><span class="badge text-bg-{{kind}}">{{status}}</span></div></div></div>{% endfor %}
+</div>
+<div class="card border-0 shadow-sm p-4"><div class="section-heading"><div><h4><i class="fa-solid fa-money-check-dollar"></i> Cash Payment Confirmation</h4><p>Cash requests remain pending until collected at the hospital counter.</p></div></div>
+<div class="table-responsive"><table class="table align-middle"><thead><tr><th>Reference</th><th>Patient</th><th>Amount</th><th>Created</th><th>Action</th></tr></thead><tbody>
+{% for tx in pending_cash %}<tr><td>{{tx.transaction_reference}}</td><td>{{tx.patient.full_name}}</td><td>₹{{'%.2f'|format(tx.amount)}}</td><td>{{tx.created_at.strftime('%d %b %Y %I:%M %p')}}</td><td><form method="post" action="{{url_for('milestone4.confirm_cash_payment',transaction_id=tx.id)}}"><button class="btn btn-sm btn-success"><i class="fa-solid fa-check"></i> Confirm Cash</button></form></td></tr>{% else %}<tr><td colspan="5" class="text-center text-muted py-4">No pending cash collections.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

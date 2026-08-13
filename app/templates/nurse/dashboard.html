@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block content %}<h2>Nurse Dashboard</h2><p>View patient information and assigned care activities.</p>
+<table class="table table-striped mt-3"><tr><th>Patient</th><th>Age</th><th>Gender</th><th>Contact</th><th>Blood Group</th></tr>{% for p in patients %}<tr><td>{{p.full_name}}</td><td>{{p.age or '-'}}</td><td>{{p.gender or '-'}}</td><td>{{p.contact_number or '-'}}</td><td>{{p.blood_group or '-'}}</td></tr>{% else %}<tr><td colspan="5">No patients found.</td></tr>{% endfor %}</table>{% endblock %}

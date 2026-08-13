@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}<h2>Doctor Dashboard</h2><p>View scheduled appointments and manage clinical records.</p>
+<div class="d-flex flex-wrap gap-2 mb-4">
+<a class="btn btn-primary" href="{{url_for('clinical.new_consultation')}}">New Consultation</a>
+<a class="btn btn-success" href="{{url_for('clinical.new_prescription')}}">New Prescription</a>
+<a class="btn btn-warning" href="{{url_for('clinical.new_laboratory_report')}}">New Lab Report</a>
+<a class="btn btn-info" href="{{url_for('clinical.ehr_search')}}">EHR</a>
+<a class="btn btn-secondary" href="{{url_for('clinical.medical_history')}}">Medical History</a>
+<a class="btn btn-dark" href="{{url_for('clinical.reports_search')}}">Reports & Search</a>
+</div>
+<table class="table table-striped mt-3"><tr><th>Patient</th><th>Date</th><th>Time</th><th>Status</th></tr>{% for a in appointments %}<tr><td>{{a.patient.full_name}}</td><td>{{a.appointment_date}}</td><td>{{a.appointment_time}}</td><td>{{a.status}}</td></tr>{% else %}<tr><td colspan="4">No appointments scheduled.</td></tr>{% endfor %}</table>{% endblock %}

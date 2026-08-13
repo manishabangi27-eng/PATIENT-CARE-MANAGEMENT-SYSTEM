@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Secure Payment{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm p-4 text-center">
+      <div class="icon-circle mx-auto mb-3"><i class="fa-solid fa-shield-halved"></i></div>
+      <h2>Secure Payment Gateway</h2>
+      <p class="text-muted">Invoice #{{ bill.id }} · {{ transaction.payment_method }} · Razorpay</p>
+      <div class="payment-summary my-4">
+        <div class="text-muted">Amount payable</div>
+        <div class="display-5 fw-bold">₹{{ '%.2f'|format(bill.total_amount or 0) }}</div>
+        <div class="small text-muted mt-2">Order: {{ order.id }}</div>
+      </div>
+      <button id="rzp-button" class="btn btn-primary btn-lg px-5"><i class="fa-solid fa-lock"></i> Pay ₹{{ '%.2f'|format(bill.total_amount or 0) }}</button>
+      <p id="payment-status" class="small text-muted mt-3">You will be redirected to the secure Razorpay checkout. Do not refresh while payment is processing.</p>
+      <a href="{{ url_for('milestone4.patient_fees') }}" class="btn btn-link">Cancel</a>
+    </div>
+  </div>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+const options = {
+  key: {{ razorpay_key|tojson }},
+  amount: {{ order.amount|int }},
+  currency: {{ currency|tojson }},
+  name: {{ hospital_name|tojson }},
+  description: {{ ('Hospital Bill #' ~ bill.id)|tojson }},
+  order_id: {{ order.id|tojson }},
+  prefill: {
+    name: {{ bill.patient.full_name|tojson }},
+    email: {{ (bill.patient.email or '')|tojson }},
+    contact: {{ (bill.patient.contact_number or '')|tojson }}
+  },
+  notes: { bill_id: {{ bill.id|tojson }}, transaction_id: {{ transaction.id|tojson }} },
+  theme: { color: '#0d6efd' },
+  modal: { confirm_close: true, escape: true, backdropclose: false },
+  handler: async function (response) {
+    const status = document.getElementById('payment-status');
+    status.textContent = 'Verifying payment securely...';
+    try {
+      const res = await fetch('{{ url_for("milestone4.razorpay_verify") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin',
+        body: JSON.stringify(response)
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        status.textContent = 'Payment verified successfully. Redirecting...';
+        window.location.href = data.redirect;
+      } else {
+        status.textContent = data.message || 'Payment verification failed. Please contact the hospital if money was deducted.';
+      }
+    } catch (e) {
+      status.textContent = 'Could not contact the hospital server for verification. Please check your payment status before retrying.';
+    }
+  },
+  ondismiss: function () {
+    document.getElementById('payment-status').textContent = 'Checkout closed. If your bank/UPI was charged, do not pay again until the payment status is checked.';
+  }
+};
+const rzp = new Razorpay(options);
+rzp.on('payment.failed', function (response) {
+  document.getElementById('payment-status').textContent = 'Payment failed or was cancelled. You can retry from the bill page.';
+});
+document.getElementById('rzp-button').onclick = function(e) { rzp.open(); e.preventDefault(); };
+</script>
+{% endblock %}

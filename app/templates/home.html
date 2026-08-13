@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %} Patient Care Management System{% endblock %}
+{% block content %}
+<div class="hero p-5 rounded-4 shadow-sm">
+<h1>Patient Care Management System</h1>
+<p class="lead">Secure authentication, patient profiles, doctor management, appointment scheduling and role-based dashboards.</p>
+<a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">Login</a>
+<a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg">Patient Registration</a>
+</div>
+<div class="row mt-4 g-3">
+{% for title, text in [('Secure Login','Password hashing and role-based access.'),('Patient Care','Profiles and medical record overview.'),('Appointments','Book appointments with available doctors.'),('Dashboards','Separate views for Admin, Doctor, Nurse and Patient.')] %}
+<div class="col-md-3"><div class="card h-100 shadow-sm"><div class="card-body"><h5>{{ title }}</h5><p>{{ text }}</p></div></div></div>
+{% endfor %}
+</div>
+{% endblock %}
