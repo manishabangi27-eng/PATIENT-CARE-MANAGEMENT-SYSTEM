@@ -1,3 +1,4 @@
+
 # Integrated Patient Care Management System
 
 A full-stack Flask + MySQL/SQLite hospital management application covering patient registration, appointments, clinical records, prescriptions, laboratory reports, billing, payments, analytics, reporting, system integration, settings, testing and optimization.
@@ -173,3 +174,6 @@ Integrated_Patient_Care_System/
 The patient billing workflow supports **Razorpay Standard Checkout** for real UPI/online payments, with server-side order creation, payment-signature verification, amount verification, captured-status verification, and webhook verification. Cash remains a manual counter workflow.
 
 See `REAL_MONEY_PAYMENTS.md` for setup, Test Mode, Live Mode, webhook configuration, and production checklist.
+=======
+# PATIENT-CARE-MANAGEMENT-SYSTEM
+>>>>>>> d35da359fc4964199e6b06c30dd13baed817251a
