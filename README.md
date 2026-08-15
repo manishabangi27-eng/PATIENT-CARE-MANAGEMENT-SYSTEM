@@ -1,5 +1,5 @@
 
-# Integrated Patient Care Management System
+#  Patient Care Management System
 
 A full-stack Flask + MySQL/SQLite hospital management application covering patient registration, appointments, clinical records, prescriptions, laboratory reports, billing, payments, analytics, reporting, system integration, settings, testing and optimization.
 
